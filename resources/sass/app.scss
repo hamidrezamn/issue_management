@@ -1,0 +1,30 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.table {
+    margin-top: 1rem;
+}
+
+.operations form {
+    display: inline-block;
+}
+
+.operations .btn {
+    padding: 2px 5px;
+}
+
+.card {
+    margin: 5px 0;
+}
