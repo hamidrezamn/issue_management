@@ -12,7 +12,7 @@ Add New Question
                 <div class="card">
                     <div class="card-header">Add New Question</div>
                     <div class="card-body">
-                        {!! Form::open(['url' => 'questions/apply']) !!}
+                        {!! Form::open(['url' => 'questions/apply', 'enctype' => "multipart/form-data"]) !!}
                             <div class="form-group">
                                 {{ Form::label('title', 'Question Title : ') }}
                                 {{ Form::text('title', null, ['class' => 'form-control']) }}
