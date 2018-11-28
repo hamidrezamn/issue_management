@@ -7,12 +7,22 @@ use Illuminate\Http\Request;
 use Validator;
 use App\models\Answers;
 use App\models\AnswerQuestion;
+use App\User;
 
 class QuestionsController extends Controller
 {
 	
-    public function index() {
-		$questions = Questions::orderBy('id', 'DESC')->get();
+	public function index()
+	{
+		$user = User::find(\Auth::user()->id);
+		if($user->hasRole('admin'))
+		{
+			$questions = Questions::orderBy('id', 'DESC')->get();
+		}
+		else
+		{
+			$questions = Questions::where('user_id', \Auth::user()->id)->orderBy('id', 'DESC')->get();
+		}
 		return view('questions.index', ['questions' => $questions]);
     }
     
@@ -48,9 +58,9 @@ class QuestionsController extends Controller
 			return redirect('/');
 		}
 		$model = Questions::findOrFail($id);
-		if($model->status == 2)
+		if(($model->status == 2) || ($model->user_id != \Auth::user()->id))
 		{
-			return redirect('/')->with('error', 'Permission Denied.');;
+			return redirect('/')->with('error', 'Permission Denied.');
 		}
 		return view('questions.update', ['model' => $model]);
 	}
@@ -58,6 +68,10 @@ class QuestionsController extends Controller
 	public function view($id)
     {
 		$model = Questions::findOrFail($id);
+		if($model->user_id != \Auth::user()->id)
+		{
+			return redirect('/')->with('error', 'Permission Denied.');
+		}
 		$answer_question = AnswerQuestion::select('answer_id')->where('question_id', $id)->get();
 		// print_r($answer_question);exit;
 		$answers = Answers::whereIn('id', $answer_question)->get();
@@ -69,6 +83,10 @@ class QuestionsController extends Controller
 		if($request->isMethod('post'))
 		{
 			$model = Questions::findOrFail($request->_delete);
+			if($model->user_id != \Auth::user()->id)
+			{
+				return redirect('/')->with('error', 'Permission Denied.');
+			}
 			$model->delete($request->_delete);
 			return redirect('/');
 		}
